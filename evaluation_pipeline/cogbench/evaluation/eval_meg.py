@@ -49,10 +49,6 @@ def eval_meg(args: ArgumentParser):
         score_path = os.path.join(result_root, f"{model_name}_rsa_{start}.mat")
         mask_path = os.path.join(result_root, f"{model_name}_masks_{start}.mat")
 
-        if os.path.exists(score_path) and os.path.exists(mask_path):
-            print(f"Already exists, skip -> {score_path}")
-            continue
-
         corrs_sess = {feat_key: [[] for _ in range(len(subs))]}
         masks = {feat_key: [[] for _ in range(len(subs))]}
 

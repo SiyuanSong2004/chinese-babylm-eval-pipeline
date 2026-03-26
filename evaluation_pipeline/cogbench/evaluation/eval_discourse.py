@@ -144,9 +144,6 @@ def eval_fmri(args: ArgumentParser):
 
         for sub in subs:
             save_path = os.path.join(roi_result_dir, f"{sub}_average.mat")
-            if os.path.exists(save_path):
-                print(f"Already exists, skip -> {save_path}")
-                continue
 
             fmri_path = os.path.join(fmri_root, roi, sub)
             fmri_response, _ = load_fmri(fmri_path, story_amount=story_amount)

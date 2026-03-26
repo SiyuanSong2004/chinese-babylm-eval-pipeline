@@ -167,9 +167,5 @@ def eval_word_fmri(args):
             feat_for_eval = feature_matrix[:n_trials]
             save_path = os.path.join(out_dir, f"{subject}_score.mat")
 
-        if os.path.exists(save_path):
-            print(f"Already exists, skip -> {save_path}")
-            continue
-
         run_prediction(feat_for_eval, fmri_for_eval, save_path)
 

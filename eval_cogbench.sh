@@ -63,8 +63,7 @@ if [[ "$TASKS" == *",word_fmri,"* ]]; then
         --data_path "${EVAL_DIR}" \
         --output_dir "${OUTPUT_DIR}" \
         --save_predictions \
-        "${REVISION_ARGS[@]}" \
-        --fast
+        "${REVISION_ARGS[@]}"
 fi
 
 if [[ "$TASKS" == *",fmri,"* ]]; then
@@ -74,8 +73,7 @@ if [[ "$TASKS" == *",fmri,"* ]]; then
         --data_path "${EVAL_DIR}" \
         --output_dir "${OUTPUT_DIR}" \
         --save_predictions \
-        "${REVISION_ARGS[@]}" \
-        --fast
+        "${REVISION_ARGS[@]}"
 fi
 
 if [[ "$TASKS" == *",meg,"* ]]; then
@@ -85,6 +83,5 @@ if [[ "$TASKS" == *",meg,"* ]]; then
         --data_path "${EVAL_DIR}" \
         --output_dir "${OUTPUT_DIR}" \
         --save_predictions \
-        "${REVISION_ARGS[@]}" \
-        --fast
+        "${REVISION_ARGS[@]}"
 fi
