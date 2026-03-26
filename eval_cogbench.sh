@@ -3,7 +3,6 @@
 set -euo pipefail
 
 MODEL_PATH=""
-BACKEND=${BACKEND:-"mlm"}
 REVISION_NAME=${REVISION_NAME:-""}
 EVAL_DIR="evaluation_data/cogbench"
 TASKS="word_fmri,fmri,meg"
@@ -14,10 +13,6 @@ while [[ $# -gt 0 ]]; do
     case "$1" in
         --model_path|--model_path_or_name|-m)
             MODEL_PATH="$2"
-            shift 2
-            ;;
-        --backend)
-            BACKEND="$2"
             shift 2
             ;;
         --revision_name)
@@ -37,7 +32,7 @@ while [[ $# -gt 0 ]]; do
             shift 2
             ;;
         -h|--help)
-            echo "Usage: bash eval_cogbench_fast.sh --model_path <path_or_hf_name> [--task word_fmri|fmri|meg|comma_list] [--backend mlm|causal|mntp|enc_dec_mask|enc_dec_prefix] [--eval_dir <path>] [--output_dir <path, default: current directory>] [--revision_name <name>]"
+            echo "Usage: bash eval_cogbench.sh --model_path <path_or_hf_name> [--task word_fmri|fmri|meg|comma_list] [--eval_dir <path>] [--output_dir <path, default: current directory>] [--revision_name <name>]"
             exit 0
             ;;
         *)
@@ -64,32 +59,32 @@ fi
 if [[ "$TASKS" == *",word_fmri,"* ]]; then
     python -m evaluation_pipeline.cogbench.run \
         --model_path_or_name "$MODEL_PATH" \
-        --backend "$BACKEND" \
         --task word_fmri \
         --data_path "${EVAL_DIR}" \
         --output_dir "${OUTPUT_DIR}" \
         --save_predictions \
-        "${REVISION_ARGS[@]}"
+        "${REVISION_ARGS[@]}" \
+        --fast
 fi
 
 if [[ "$TASKS" == *",fmri,"* ]]; then
     python -m evaluation_pipeline.cogbench.run \
         --model_path_or_name "$MODEL_PATH" \
-        --backend "$BACKEND" \
         --task fmri \
         --data_path "${EVAL_DIR}" \
         --output_dir "${OUTPUT_DIR}" \
         --save_predictions \
-        "${REVISION_ARGS[@]}"
+        "${REVISION_ARGS[@]}" \
+        --fast
 fi
 
 if [[ "$TASKS" == *",meg,"* ]]; then
     python -m evaluation_pipeline.cogbench.run \
         --model_path_or_name "$MODEL_PATH" \
-        --backend "$BACKEND" \
         --task meg \
         --data_path "${EVAL_DIR}" \
         --output_dir "${OUTPUT_DIR}" \
         --save_predictions \
-        "${REVISION_ARGS[@]}"
+        "${REVISION_ARGS[@]}" \
+        --fast
 fi

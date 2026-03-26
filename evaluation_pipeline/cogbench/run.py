@@ -17,11 +17,9 @@ def _parse_arguments():
     parser.add_argument("--data_path", required=True, type=pathlib.Path, help="Path to the data directory")
     parser.add_argument("--task", required=True, type=str, help="The task that is being evaluated.", choices=["word_fmri", "fmri", "meg"])
     parser.add_argument("--model_path_or_name", required=True, type=str, help="Path to the model to evaluate.")
-    parser.add_argument("--backend", required=True, type=str, help="The evaluation backend strategy", choices=["mlm", "causal", "mntp", "enc_dec_mask", "enc_dec_prefix"])
     parser.add_argument("--output_dir", default="results", type=pathlib.Path, help="Path to the data directory")
     parser.add_argument("--revision_name", default=None, type=str, help="Name of the checkpoint/version of the model to test. (If None, the main will be used)")
 
-    parser.add_argument("--batch_size", default=64, type=int, help="Batch size for evaluation")
     parser.add_argument("--save_predictions", default=False, action="store_true", help="Whether or not to save predictions.")
     parser.add_argument("--fast", default=False, action="store_true", help="Enable fast evaluation mode.")
 
