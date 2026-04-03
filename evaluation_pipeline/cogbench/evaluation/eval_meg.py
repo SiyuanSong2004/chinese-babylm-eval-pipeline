@@ -14,9 +14,7 @@ def eval_meg(args: ArgumentParser):
     model_name = os.path.basename(os.path.normpath(str(args.model_path_or_name)))
     model_root = os.path.join(output_root, model_name)
 
-    # Use sentence features produced by infer_sentence for this model.
     feature_root = model_root
-    # notPU masks live under cogbench/notPU.
     pu_root = data_path + "/"
     result_root = os.path.join(model_root, "results", "meg")
 

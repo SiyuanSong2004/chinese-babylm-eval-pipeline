@@ -15,7 +15,7 @@ def _parse_arguments():
 
     # Required parameters
     parser.add_argument("--data_path", required=True, type=pathlib.Path, help="Path to the data directory")
-    parser.add_argument("--task", required=True, type=str, help="The task that is being evaluated.", choices=["word_fmri", "fmri", "meg"])
+    parser.add_argument("--task", required=True, type=str, help="The task that is being evaluated.", choices=["word_fmri", "fmri", "meg", "eye_tracking"])
     parser.add_argument("--model_path_or_name", required=True, type=str, help="Path to the model to evaluate.")
     parser.add_argument("--output_dir", default="results", type=pathlib.Path, help="Path to the data directory")
     parser.add_argument("--revision_name", default=None, type=str, help="Name of the checkpoint/version of the model to test. (If None, the main will be used)")
@@ -77,6 +77,13 @@ def create_evaluation_report(args: argparse.ArgumentParser):
 
             if score is not None:
                 metrics.append({"file": file_path, "value": score})
+    elif args.task == "eye_tracking":
+        eye_report_path = os.path.join(output_root, model_name, "results", "eye_tracking", f"cogbench_eye_tracking_{model_name}_report.json")
+        if os.path.exists(eye_report_path):
+            with open(eye_report_path, "r", encoding="utf-8") as f:
+                eye_report = json.load(f)
+            for layer_idx, score in enumerate(eye_report.get("layer_mean_similarity", [])):
+                metrics.append({"file": eye_report_path, "layer": layer_idx, "value": float(score)})
 
     values = [item["value"] for item in metrics]
     summary = {

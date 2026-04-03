@@ -5,7 +5,7 @@ set -euo pipefail
 MODEL_PATH=""
 REVISION_NAME=${REVISION_NAME:-""}
 EVAL_DIR="evaluation_data/cogbench"
-TASKS="word_fmri,fmri,meg"
+TASKS="word_fmri,fmri,meg,eye_tracking"
 OUTPUT_DIR=${OUTPUT_DIR:-"$PWD"}
 
 # Parse command-line arguments.
@@ -80,6 +80,16 @@ if [[ "$TASKS" == *",meg,"* ]]; then
     python -m evaluation_pipeline.cogbench.run \
         --model_path_or_name "$MODEL_PATH" \
         --task meg \
+        --data_path "${EVAL_DIR}" \
+        --output_dir "${OUTPUT_DIR}" \
+        --save_predictions \
+        "${REVISION_ARGS[@]}"
+fi
+
+if [[ "$TASKS" == *",eye_tracking,"* ]]; then
+    python -m evaluation_pipeline.cogbench.run \
+        --model_path_or_name "$MODEL_PATH" \
+        --task eye_tracking \
         --data_path "${EVAL_DIR}" \
         --output_dir "${OUTPUT_DIR}" \
         --save_predictions \
