@@ -9,7 +9,6 @@ Fine-tuning (CLUE):
   - OCNLI: natural language inference
   - TNEWS: news topic classification
   - CLUEWSC2020: pronoun disambiguation
-  - C3: multiple-choice machine reading comprehension
 
 Usage:
     python prepare_chinese_data.py [--output_dir evaluation_data]
@@ -145,32 +144,6 @@ def prepare_cluewsc2020(output_dir: pathlib.Path) -> None:
         write_jsonl(rows, clue_dir / f"{out_name}.jsonl")
 
 
-def prepare_c3(output_dir: pathlib.Path) -> None:
-    """C3: multiple-choice MRC. Converts to binary (context+question+choice, label)
-    format where label=1 for correct choice and label=0 for incorrect.
-    """
-    print("=== C3 ===")
-    clue_dir = output_dir / "full_eval" / "clue"
-
-    for split_name, out_name in [("train", "c3.train"), ("validation", "c3.valid")]:
-        rows = []
-        for config in ["d", "m"]:  # dialog, mixed
-            ds = load_dataset("dataset-org/c3", config, split=split_name)
-            for item in ds:
-                context = "".join(item["documents"])
-                for q_block in item["questions"]:
-                    question = q_block["question"]
-                    answer = q_block["answer"]
-                    for choice in q_block["choice"]:
-                        rows.append({
-                            "context": context,
-                            "question": question,
-                            "choice": choice,
-                            "label": 1 if choice == answer else 0,
-                        })
-        write_jsonl(rows, clue_dir / f"{out_name}.jsonl")
-
-
 def main():
     parser = argparse.ArgumentParser(description="Prepare Chinese evaluation data")
     parser.add_argument("--output_dir", type=pathlib.Path, default=pathlib.Path("evaluation_data"))
@@ -181,7 +154,6 @@ def main():
     prepare_ocnli(args.output_dir)
     prepare_tnews(args.output_dir)
     prepare_cluewsc2020(args.output_dir)
-    prepare_c3(args.output_dir)
 
     print("\nDone! All Chinese evaluation data has been prepared.")
 

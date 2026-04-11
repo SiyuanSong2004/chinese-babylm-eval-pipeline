@@ -54,8 +54,6 @@ class Dataset(torch.utils.data.Dataset):
                 load(["sentence"])
             case "cluewsc2020":
                 load(["span2_text", "span1_text"], ["text"], "\"{}\"在这段话中指的是\"{}\"吗？")
-            case "c3":
-                load(["question", "choice"], ["context"], "问题：{} 选项：{}")
             case _:
                 raise ValueError("This is not an implemented task! Please implement it!")
 
@@ -205,8 +203,6 @@ class PredictDataset(torch.utils.data.Dataset):
                 load(["sentence"])
             case "cluewsc2020":
                 load(["span2_text", "span1_text"], ["text"], "\"{}\"在这段话中指的是\"{}\"吗？")
-            case "c3":
-                load(["question", "choice"], ["context"], "问题：{} 选项：{}")
             case _:
                 raise ValueError("This is not an implemented task! Please implement it!")
 
