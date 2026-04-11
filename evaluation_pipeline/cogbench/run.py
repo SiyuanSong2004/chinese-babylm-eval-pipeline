@@ -70,7 +70,7 @@ def create_evaluation_report(args: argparse.ArgumentParser):
 
     elif args.task == "fmri":
         patterns = [
-            os.path.join(output_root, model_name, "results", "fmri128", "*", "*_average.mat"),
+            os.path.join(output_root, model_name, "results", "fmri", "*", "*_average.mat"),
             os.path.join(output_root, model_name, "results", "fmri", "*", "*_average.mat"),
         ]
         fmri_files = []
