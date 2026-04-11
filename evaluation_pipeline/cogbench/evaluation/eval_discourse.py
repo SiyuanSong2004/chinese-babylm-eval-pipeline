@@ -134,7 +134,7 @@ def _resolve_split_dirs(data_path: str) -> dict[str, str] | None:
 
 
 def _load_split_fmri_response(split_path: str, roi: str, sub: str, story_ids: list[int]) -> torch.FloatTensor | None:
-    fmri_path = os.path.join(split_path, "fmri_dim128", roi, sub)
+    fmri_path = os.path.join(split_path, "fmri", roi, sub)
     fmri_story_blocks = []
     for sid in story_ids:
         story_file = os.path.join(fmri_path, f"story_{sid}.mat")
@@ -152,7 +152,7 @@ def _load_split_fmri_response(split_path: str, roi: str, sub: str, story_ids: li
 
 def _detect_subjects_for_roi(data_path: str, roi: str, split_dirs: dict[str, str] | None) -> list[str]:
     if split_dirs is None:
-        roi_dir = os.path.join(data_path, "fmri_dim128", roi)
+        roi_dir = os.path.join(data_path, "fmri", roi)
         if not os.path.isdir(roi_dir):
             return []
         subjects = [name for name in os.listdir(roi_dir) if os.path.isdir(os.path.join(roi_dir, name))]
@@ -164,7 +164,7 @@ def _detect_subjects_for_roi(data_path: str, roi: str, split_dirs: dict[str, str
 
     common_subjects = None
     for split_name in available_splits:
-        roi_dir = os.path.join(split_dirs[split_name], "fmri_dim128", roi)
+        roi_dir = os.path.join(split_dirs[split_name], "fmri", roi)
         if not os.path.isdir(roi_dir):
             return []
         subjects = {name for name in os.listdir(roi_dir) if os.path.isdir(os.path.join(roi_dir, name))}
@@ -211,8 +211,8 @@ def eval_fmri(args: ArgumentParser):
     if args.fast:
         roi_types = roi_types[:1]
 
-    fmri_root = os.path.join(data_path, "fmri_dim128")
-    result_root = os.path.join(model_root, "results", "fmri128")
+    fmri_root = os.path.join(data_path, "fmri")
+    result_root = os.path.join(model_root, "results", "fmri")
 
     for roi in roi_types:
         roi_result_dir = os.path.join(result_root, roi)
@@ -220,7 +220,7 @@ def eval_fmri(args: ArgumentParser):
 
         subs = _detect_subjects_for_roi(data_path, roi, split_dirs)
         if not subs:
-            print(f"Skip ROI={roi}: no subject directories found in fmri_dim128.")
+            print(f"Skip ROI={roi}: no subject directories found in fmri.")
             continue
         if args.fast:
             subs = subs[:1]
