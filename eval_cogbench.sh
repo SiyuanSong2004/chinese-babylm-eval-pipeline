@@ -4,7 +4,7 @@ set -euo pipefail
 
 MODEL_PATH=""
 REVISION_NAME=${REVISION_NAME:-""}
-EVAL_DIR="evaluation_data/cogbench-fmri-0611"
+EVAL_DIR="evaluation_data/cogbench-fmri-0415"
 TASKS="word_fmri,fmri"
 OUTPUT_DIR=${OUTPUT_DIR:-"$PWD"}
 EYE_MAX_WORDS=${EYE_MAX_WORDS:-""}
