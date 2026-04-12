@@ -100,7 +100,7 @@ class ModelForSequenceClassification(nn.Module):
 
         Shapes:
             - input_data: :math:`(B, S)`
-            - attention_mask: :math:`(B, S)` or :math:`(B, S, S)`
+            - attention_mask: :math:`(B, S)`
         """
         if self.enc_dec:
             batch_size = attention_mask.size(0)
@@ -127,8 +127,9 @@ class ModelForSequenceClassification(nn.Module):
         if self.take_final and not self.enc_dec and not self.causal:
             transformer_output: torch.Tensor = encoding[:, -1]
         elif self.take_final and not self.enc_dec:
-            final_position: torch.Tensor = attention_mask[:, :, -1].squeeze().long().argmax(-1) - 1
-            transformer_output: torch.Tensor = encoding[final_position].diagonal().t()
+            final_position = attention_mask.long().sum(-1) - 1
+            batch_idx = torch.arange(encoding.size(0), device=encoding.device)
+            transformer_output = encoding[batch_idx, final_position]
         else:
             transformer_output = encoding[:, 0]
         logits: torch.Tensor = self.classifier(transformer_output)
