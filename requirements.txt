@@ -88,6 +88,6 @@ wheel==0.45.1
 xxhash==3.5.0
 yarl==1.20.0
 h5py==3.16.0
-gensim=4.4.0
+gensim==4.4.0
 pyparsing==3.3.2
 openpyxl==3.1.5
