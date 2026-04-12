@@ -218,21 +218,21 @@ class CompletionRankingDataset(Dataset):
         """
         sentences = sentence_dict["sentences"]
         completions = sentence_dict["completions"]
-        if self.tokenizer.mask_token_id is None:
-            if self.tokenizer.additional_special_tokens is not None:
-                mask_index = self.tokenizer.additional_special_tokens_id[0]
-            else:
-                raise "Unknown mask token, please specify it in the tokenizer!"
-        else:
+        if self.tokenizer.mask_token_id is not None:
             mask_index = self.tokenizer.mask_token_id
+        elif self.tokenizer.additional_special_tokens_ids:
+            mask_index = self.tokenizer.additional_special_tokens_ids[0]
+        else:
+            raise ValueError("Unknown mask token, please specify it in the tokenizer!")
 
         if self.tokenizer.bos_token_id is not None:
             dec_token = [self.tokenizer.bos_token_id, mask_index]
+        elif self.tokenizer.additional_special_tokens_ids:
+            dec_token = [self.tokenizer.additional_special_tokens_ids[0]]
+        elif self.tokenizer.cls_token_id is not None:
+            dec_token = [self.tokenizer.cls_token_id, mask_index]
         else:
-            if self.tokenizer.additional_special_tokens is not None:
-                dec_token = [self.tokenizer.additional_special_tokens_id[0]]
-            else:
-                raise "Unknown BOS token, please specify it in the tokenizer!"
+            raise ValueError("Unknown BOS / decoder-start token, please specify it in the tokenizer!")
 
         processed_sentence_dict = {}
         for sentence_idx, (sentence, completion) in enumerate(zip(sentences, completions)):
@@ -273,6 +273,7 @@ class CompletionRankingDataset(Dataset):
             processed_sentence_dict[f'sentence_{sentence_idx}_dec_tokens'] = dec_tokens
             processed_sentence_dict[f'sentence_{sentence_idx}_dec_attn_mask'] = dec_att
             processed_sentence_dict[f'sentence_{sentence_idx}_targets'] = torch.LongTensor(target_tokens)
+            processed_sentence_dict[f'sentence_{sentence_idx}_image'] = None
 
         return processed_sentence_dict
 
