@@ -133,7 +133,7 @@ def prepare_hanzi_pinyin(output_dir: pathlib.Path) -> None:
 # ──────────────────────────────────────────────
 
 COGBENCH_REPO = "zhiheng-qian/cogbench"
-COGBENCH_TAR = "cogbench-fmri-0415.tar"
+COGBENCH_TAR = "cogbench-fmri-0415.tar.gz"
 COGBENCH_DIR = "cogbench-fmri-0415"
 
 
