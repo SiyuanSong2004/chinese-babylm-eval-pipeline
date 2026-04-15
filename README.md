@@ -206,8 +206,7 @@ By default, last hidden states are used as features. For encoder-decoder models,
 results/<model_name>/<revision_or_"main">/
   finetune/<task>/predictions.json + results.txt
   zero_shot/<backend>/<task>/<dataset>/predictions.json + best_temperature_report.txt
-results/<model_name>/results/
-  cogbench_<task>_<model_name>_report.json
+  cogbench/<task>/cogbench_<task>_<model_name>_report.json
 ```
 
 ## Collating Results
@@ -436,8 +435,7 @@ bash eval_cogbench_fast.sh \
 results/<model_name>/<revision_or_"main">/
   finetune/<task>/predictions.json + results.txt
   zero_shot/<backend>/<task>/<dataset>/predictions.json + best_temperature_report.txt
-results/<model_name>/results/
-  cogbench_<task>_<model_name>_report.json
+  cogbench/<task>/cogbench_<task>_<model_name>_report.json
 ```
 
 ## 汇总结果
