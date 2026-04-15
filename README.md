@@ -12,6 +12,19 @@ This repository contains the evaluation pipeline for the **2026 Chinese BabyLM C
 | **Cog Track** | Available | Brain-aligned evaluation with fMRI data |
 
 ---
+## Training data
+
+- Option 1: you can use the 100M-word training data prepared by us. 
+
+Download from huggingface: https://huggingface.co/datasets/chinese-babylm-org/babylm-zho-100M
+
+100M words is calculated using jieba. 
+
+- Option 2: BYO (build your own) training data.
+As long as its size is 100M words, as tokenized by jieba. 
+
+
+---
 
 ## Quickstart: Integrated Pipeline
 
