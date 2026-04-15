@@ -7,7 +7,7 @@
 #   path    — HuggingFace repo ID or local directory path
 #   backend — one of: causal, mlm, mntp, enc_dec_mask, enc_dec_prefix
 models:
-  - path: Qwen/Qwen3-0.6B
+  - path: /home/haihu2/scratch/models/Qwen3-0.6B
     backend: causal
   # - path: /path/to/local/model
   #   backend: mlm
