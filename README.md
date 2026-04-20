@@ -11,6 +11,12 @@ This repository contains the evaluation pipeline for the **2026 Chinese BabyLM C
 | **Hanzi Track** | Available | Character structure and phonology minimal pairs |
 | **Cog Track** | Available | Brain-aligned evaluation with fMRI data |
 
+## Changelog
+
+**[2026/04/19]**
+1. Updated the ZhoBLiMP dataset (`chinese-babylm-org/zhoblimp`). Please use the latest version for all evaluations.
+2. Added detailed rules for pre-training data — see the [Token Count](#token-count) section.
+
 ---
 ## Training data
 
@@ -238,6 +244,50 @@ bash collate_preds.sh <model_name> <backend> <track>
 | Hanzi | hanzi-pinyin | Character phonology | `chinese-babylm-org/hanzi-pinyin` |
 | Cog | CogBench | fMRI brain recordings | `zhiheng-qian/cogbench` |
 
+## Token Count
+
+The training data must contain **no more than 100M tokens**, where tokens are defined as **Jieba word segments** (version 0.42.1).
+
+### Option A — Use the official pre-training dataset
+
+The organizers provide a ready-to-use 100M-token dataset on HuggingFace Hub:
+
+```
+chinese-babylm-org/babylm-zho-100M
+```
+
+This dataset is derived from the original `BabyLM-community/babylm-zho` (≈ 102M tokens) by removing a portion of WenetSpeech entries to bring the total within the 100M limit.
+
+Load it directly via the `datasets` library:
+
+```python
+from datasets import load_dataset
+ds = load_dataset("chinese-babylm-org/babylm-zho-100M")
+```
+
+The token count for this dataset has already been verified by the organizers using Jieba 0.42.1.
+
+### Option B — Use your own dataset (≤ 100M tokens)
+
+If you choose a custom dataset, you must verify the token count yourself before submission. Count tokens with Jieba 0.42.1 as follows:
+
+```python
+import jieba  # version 0.42.1
+
+total_tokens = 0
+for text in your_texts:          # iterate over all training samples
+    total_tokens += len(list(jieba.cut(text)))
+
+print(f"Total Jieba tokens: {total_tokens:,}")
+assert total_tokens <= 100_000_000, "Dataset exceeds 100M token limit"
+```
+
+**Rules:**
+- Token count is always measured with `jieba.cut()` (default mode, no `HMM=False` or other flags).
+- The Jieba version must be **0.42.1** (`pip install jieba==0.42.1`).
+- Include all training splits in the count; evaluation/test splits are excluded.
+- Report the exact token count in your system description.
+
 </details>
 
 ---
@@ -252,6 +302,12 @@ bash collate_preds.sh <model_name> <backend> <track>
 | **NLU 赛道** | 可用 | 最小对评测（ZhoBLiMP）+ 微调（CLUE） |
 | **汉字赛道** | 可用 | 汉字结构与语音最小对评测 |
 | **Cog 赛道** | 可用 | 基于 fMRI 数据的脑对齐评测 |
+
+## 更新日志
+
+**[2026/04/19]**
+1. 更新了 ZhoBLiMP 数据集（`chinese-babylm-org/zhoblimp`），测试请以最新版本为准。
+2. 更新了关于预训练数据规则的详细说明，见 [Token 计数](#token-计数) 部分。
 
 ---
 
@@ -466,5 +522,49 @@ bash collate_preds.sh <model_name> <backend> <track>
 | 汉字 | hanzi-structure | 汉字部件结构 | `chinese-babylm-org/hanzi-structure` |
 | 汉字 | hanzi-pinyin | 汉字语音 | `chinese-babylm-org/hanzi-pinyin` |
 | Cog | CogBench | fMRI 神经记录 | `zhiheng-qian/cogbench` |
+
+## Token 计数
+
+训练数据的 **总 Token 数不得超过 1 亿（100M）**，Token 以 **Jieba 分词**（版本 0.42.1）为计量标准。
+
+### 方案 A — 使用官方预训练数据集
+
+主办方在 HuggingFace Hub 提供了经过验证的 100M Token 数据集：
+
+```
+chinese-babylm-org/babylm-zho-100M
+```
+
+该数据集基于原始数据集 `BabyLM-community/babylm-zho`（约 102M Token）裁剪而来，通过移除部分 WenetSpeech 条目使总量符合 100M 上限。
+
+通过 `datasets` 库直接加载：
+
+```python
+from datasets import load_dataset
+ds = load_dataset("chinese-babylm-org/babylm-zho-100M")
+```
+
+该数据集的 Token 数已由主办方使用 Jieba 0.42.1 完成核验，参赛者可直接使用，无需自行统计。
+
+### 方案 B — 使用自选数据集（≤ 100M Token）
+
+若选择自定义数据集，须在提交前自行核验 Token 总数。请按以下方式使用 Jieba 0.42.1 统计：
+
+```python
+import jieba  # 版本 0.42.1
+
+total_tokens = 0
+for text in your_texts:          # 遍历所有训练样本的文本
+    total_tokens += len(list(jieba.cut(text)))
+
+print(f"Jieba 总词数：{total_tokens:,}")
+assert total_tokens <= 100_000_000, "数据集超出 100M Token 上限"
+```
+
+**规则说明：**
+- Token 计数统一使用 `jieba.cut()`（默认模式，不得添加 `HMM=False` 等参数）。
+- Jieba 版本须为 **0.42.1**（安装命令：`pip install jieba==0.42.1`）。
+- 计数范围覆盖全部训练分片；评测集和测试集不计入。
+- 请在系统说明（system description）中报告确切的 Token 总数。
 
 </details>
