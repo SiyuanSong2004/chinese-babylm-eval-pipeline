@@ -288,10 +288,16 @@ class CompletionRankingDataset(Dataset):
         prefixes = sentence_dict["prefixes"]
         completions = sentence_dict["completions"]
         if self.tokenizer.mask_token_id is None:
-            if self.tokenizer.additional_special_tokens is not None:
-                mask_index = [self.tokenizer.additional_special_tokens_id[0]]
+            if self.tokenizer.additional_special_tokens_ids:
+                mask_index = [self.tokenizer.additional_special_tokens_ids[0]]
+            elif self.tokenizer.unk_token_id is not None:
+                mask_index = [self.tokenizer.unk_token_id]
+            elif self.tokenizer.eos_token_id is not None:
+                mask_index = [self.tokenizer.eos_token_id]
+            elif self.tokenizer.pad_token_id is not None:
+                mask_index = [self.tokenizer.pad_token_id]
             else:
-                raise "Unknown mask token, please specify it in the tokenizer!"
+                raise ValueError("Unknown mask token, please specify it in the tokenizer!")
         else:
             mask_index = [self.tokenizer.mask_token_id]
 
@@ -304,10 +310,14 @@ class CompletionRankingDataset(Dataset):
         if self.tokenizer.bos_token_id is not None:
             bos_index = [self.tokenizer.bos_token_id]
         else:
-            if self.tokenizer.additional_special_tokens is not None:
-                bos_index = [self.tokenizer.additional_special_tokens_id[0]]
+            if self.tokenizer.additional_special_tokens_ids:
+                bos_index = [self.tokenizer.additional_special_tokens_ids[0]]
+            elif self.tokenizer.cls_token_id is not None:
+                bos_index = [self.tokenizer.cls_token_id]
+            elif self.tokenizer.pad_token_id is not None:
+                bos_index = [self.tokenizer.pad_token_id]
             else:
-                raise "Unknown BOS token, please specify it in the tokenizer!"
+                raise ValueError("Unknown BOS token, please specify it in the tokenizer!")
         if self.tokenizer.eos_token_id is not None:
             eos_index = [self.tokenizer.eos_token_id]
             att_append = [1]
@@ -344,6 +354,7 @@ class CompletionRankingDataset(Dataset):
             processed_sentence_dict[f'sentence_{sentence_idx}_dec_tokens'] = dec_tokens
             processed_sentence_dict[f'sentence_{sentence_idx}_dec_attn_mask'] = dec_attention_mask
             processed_sentence_dict[f'sentence_{sentence_idx}_targets'] = torch.LongTensor(target_tokens)
+            processed_sentence_dict[f'sentence_{sentence_idx}_image'] = None
 
         return processed_sentence_dict
 
