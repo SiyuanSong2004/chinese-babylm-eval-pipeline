@@ -1,6 +1,31 @@
 # 2026 Chinese BabyLM Challenge — Evaluation Pipeline
 
 <details open>
+<summary><b>Baselines</b></summary>
+  
+| Model | zhoblimp | hanzi_struc | hanzi_pinyin | word_fmri | fmri | afqmc | ocnli | tnews | cluewsc20 | mean |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Qwen3-0.6B | 77.62 | 59.85 | 49.80 | 55.00 | 10.40 | 71.57 | 75.08 | 58.10 | 71.71 | 58.79 |
+| Zh-Pythia-14M-v0.1-checkpoint-3000 | 57.10 | 52.00 | 11.50 | 55.70 | 7.80 | 69.05 | 57.66 | 51.62 | 63.49 | 47.32 |
+| Zh-Pythia-70M-v0.1-checkpoint-3000 | 65.88 | 52.35 | 15.70 | 56.00 | 8.70 | 69.00 | 60.47 | 52.53 | 63.49 | 49.35 |
+| Zh-Pythia-160M-v0.1-checkpoint-3000 | 70.98 | 52.40 | 18.50 | 56.00 | 8.90 | 68.98 | 60.58 | 52.91 | 63.49 | 50.30 |
+| Zh-Pythia-410M-v0.1-checkpoint-3000 | 71.65 | 51.20 | 16.70 | 56.10 | 9.00 | 69.00 | 61.15 | 52.83 | 63.49 | 50.12 |
+| Zh-Pythia-1.4B-v0.1-checkpoint-3000 | 75.67 | 53.80 | 17.10 | 56.10 | 9.00 | 69.00 | 61.97 | 53.84 | 63.82 | 51.14 |
+| xlm-roberta-base | 84.00 | 57.90 | 37.90 | 55.60 | 10.60 | 73.03 | 73.93 | 56.05 | 63.49 | 56.94 |
+| bert-base-chinese | 83.26 | 57.25 | 47.00 | 56.00 | 10.50 | 72.75 | 74.34 | 57.54 | 72.37 | 59.00 |
+| chinese-bert-wwm-ext | 84.86 | 58.05 | 29.60 | 55.80 | 10.40 | 73.15 | 75.36 | 58.32 | 74.34 | 57.76 |
+| roc-bert-base-zh | 53.89 | 56.80 | 35.50 | 55.60 | 9.90 | 69.00 | 37.39 | 57.57 | 63.49 | 48.79 |
+| ChineseBERT-base | 51.69 | 56.25 | 46.80 | 55.60 | 4.70 | 69.00 | 37.39 | 27.78 | 63.49 | 45.86 |
+| babylm-chinese-t5-14M-epoch3 | 57.40 | 51.70 | 28.00 | 55.50 | 8.10 | 69.00 | 42.00 | 37.30 | 63.80 | 45.87 |
+| babylm-chinese-bert-14M-epoch3 | 59.19 | 54.35 | 35.70 | 55.90 | 9.00 | 69.00 | 52.92 | 52.18 | 62.83 | 50.12 |
+| babylm-chinese-mamba-14M-epoch3 | 77.48 | 53.20 | 40.40 | 52.68 | 9.13 | 68.90 | 58.00 | 53.20 | 62.50 | 52.83 |
+| babylm-chinese-pythia-14M-epoch3 | 73.29 | 52.05 | 30.10 | 53.70 | 8.30 | 69.14 | 56.31 | 52.65 | 61.84 | 50.82 |
+| babylm-chinese-t5-14M-epoch20 | 63.58 | 52.70 | 39.20 | 53.30 | 7.99 | 69.00 | 47.63 | 50.95 | 65.46 |
+
+
+</details>
+
+<details open>
 <summary><b>English</b></summary>
 
 This repository contains the evaluation pipeline for the **2026 Chinese BabyLM Challenge**, adapted from the original BabyLM 2025 English evaluation pipeline. The challenge consists of three tracks:
