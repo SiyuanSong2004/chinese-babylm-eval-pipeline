@@ -22,7 +22,7 @@ This repository contains the evaluation pipeline for the **2026 Chinese BabyLM C
 
 ## Quickstart: Integrated Pipeline
 
-The easiest way to run the full evaluation is with `pipeline.py`, which handles data download, evaluation, and result reporting in two commands.
+The easiest way to run the full evaluation is with `pipeline.py`, which handles data download, evaluation, and result export.
 
 ### 1. Download all evaluation data
 
@@ -69,6 +69,36 @@ Results are written to `results/` and a summary table is printed at the end:
 |---|---|---|
 | `--config` | `config.yaml` | Path to YAML config file |
 | `--results_dir` | from config | Override results directory |
+
+### 3. Export results for leaderboard submission
+
+After evaluation, export results to a JSON file compatible with the [ChineseBabyLM 2026 Leaderboard](https://chinese-babylm.github.io/):
+
+```bash
+python pipeline.py gather -c config.yaml --export results.json
+```
+
+This produces a JSON file like:
+
+```json
+{
+  "zhoblimp": {"accuracy": 0.75},
+  "afqmc": {"accuracy": 0.70},
+  "ocnli": {"accuracy": 0.65},
+  "tnews": {"accuracy": 0.60},
+  "cluewsc2020": {"accuracy": 0.55},
+  "word_fmri": {"mean": 0.30},
+  "fmri": {"mean": 0.25},
+  "hanzi_structure": {"accuracy": 0.60},
+  "hanzi_pinyin": {"accuracy": 0.55}
+}
+```
+
+- Scores are raw values between 0 and 1 (the leaderboard multiplies by 100 for display).
+- Tasks that weren't evaluated are omitted; the leaderboard treats missing tasks as 0.
+- If your config contains multiple models, one JSON per model is written (model name appended to the filename, e.g. `results_Qwen3-0.6B.json`).
+
+Upload the exported JSON on the [leaderboard submission page](https://chinese-babylm.github.io/).
 
 ---
 
@@ -300,7 +330,7 @@ assert total_tokens <= 100_000_000, "Dataset exceeds 100M token limit"
 
 ## 快速开始：集成流水线
 
-推荐使用 `pipeline.py` 完成数据下载、评测和结果汇总，只需两条命令。
+推荐使用 `pipeline.py` 完成数据下载、评测和结果导出。
 
 ### 1. 下载所有评测数据
 
@@ -337,7 +367,7 @@ python pipeline.py eval --config config.yaml
 =====================================================================
  Model          zhoblimp  hanzi_structure  hanzi_pinyin  word_fmri ...
 =====================================================================
- Qwen3-0.6B        67.3             72.1          58.4       0.31  ...
+ Qwen3-0.6B        71.67             59.85          49.80       0.5495  ...
 =====================================================================
 ```
 
@@ -347,6 +377,36 @@ python pipeline.py eval --config config.yaml
 |---|---|---|
 | `--config` | `config.yaml` | YAML 配置文件路径 |
 | `--results_dir` | 来自配置文件 | 覆盖结果目录 |
+
+### 3. 导出结果用于排行榜提交
+
+评测完成后，将结果导出为与 [ChineseBabyLM 2026 排行榜](https://chinese-babylm.github.io/) 兼容的 JSON 文件：
+
+```bash
+python pipeline.py gather -c config.yaml --export results.json
+```
+
+生成的 JSON 格式如下：
+
+```json
+{
+  "zhoblimp": {"accuracy": 0.75},
+  "afqmc": {"accuracy": 0.70},
+  "ocnli": {"accuracy": 0.65},
+  "tnews": {"accuracy": 0.60},
+  "cluewsc2020": {"accuracy": 0.55},
+  "word_fmri": {"mean": 0.30},
+  "fmri": {"mean": 0.25},
+  "hanzi_structure": {"accuracy": 0.60},
+  "hanzi_pinyin": {"accuracy": 0.55}
+}
+```
+
+- 分数为 0 到 1 之间的原始值（排行榜会乘以 100 显示）。
+- 未评测的任务会被省略，排行榜将其视为 0 分。
+- 如果配置文件中包含多个模型，将为每个模型生成单独的 JSON 文件（模型名附加到文件名后，例如 `results_Qwen3-0.6B.json`）。
+
+在[排行榜提交页面](https://chinese-babylm.github.io/)上传导出的 JSON 文件即可。
 
 ---
 

@@ -495,6 +495,66 @@ def _gather_one_config(config_path, results_dir_override=None):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Leaderboard export
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Metric key for each task category in the leaderboard JSON
+_EXPORT_METRIC = {
+    "zero_shot": "accuracy",
+    "finetune":  "accuracy",
+    "cogbench":  "mean",
+}
+
+
+def _build_leaderboard_entry(task_scores):
+    """Convert a model's {task: score_0_100} dict to leaderboard JSON format.
+
+    Scores are converted from the internal 0-100 scale to 0-1.
+    Tasks with no result (None) are omitted.
+    """
+    entry = {}
+    for task in ALL_TASKS:
+        score = task_scores.get(task)
+        if score is None:
+            continue
+        metric_key = _EXPORT_METRIC[TASK_CATEGORY[task]]
+        entry[task] = {metric_key: score / 100.0}
+    return entry
+
+
+def _export_leaderboard(export_path, combined_scores, *, is_multi):
+    """Write leaderboard-compatible JSON file(s).
+
+    If *is_multi* is True (directory of configs / multiple models), one file
+    per model is written with the model name appended to the base filename.
+    """
+    export_path = pathlib.Path(export_path)
+    model_paths = list(combined_scores.keys())
+
+    if not model_paths:
+        return
+
+    if is_multi and len(model_paths) > 1:
+        stem = export_path.stem
+        suffix = export_path.suffix or ".json"
+        for model_path in model_paths:
+            model_name = pathlib.Path(model_path).name
+            out = export_path.with_name(f"{stem}_{model_name}{suffix}")
+            entry = _build_leaderboard_entry(combined_scores[model_path])
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(json.dumps(entry, indent=2, ensure_ascii=False) + "\n",
+                           encoding="utf-8")
+            print(f"  Exported: {out}")
+    else:
+        entry = _build_leaderboard_entry(combined_scores[model_paths[0]])
+        export_path = export_path if export_path.suffix else export_path.with_suffix(".json")
+        export_path.parent.mkdir(parents=True, exist_ok=True)
+        export_path.write_text(json.dumps(entry, indent=2, ensure_ascii=False) + "\n",
+                               encoding="utf-8")
+        print(f"  Exported: {export_path}")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # Subcommand: gather
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -531,6 +591,9 @@ def cmd_gather(args):
 
     print(f"\nCollected results for {len(combined_scores)} model(s).")
     _print_summary(ALL_TASKS, combined_scores)
+
+    if args.export:
+        _export_leaderboard(args.export, combined_scores, is_multi=config_path.is_dir())
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -716,6 +779,15 @@ def main():
         "--results_dir",
         default=None,
         help="Override the results directory from the config(s)",
+    )
+    ga_parser.add_argument(
+        "--export", "-e",
+        default=None,
+        metavar="PATH",
+        help="Export results to a JSON file compatible with the "
+             "ChineseBabyLM 2026 Leaderboard submission format. "
+             "With a directory of configs, one JSON per model is "
+             "written (model name appended to the filename).",
     )
     ga_parser.set_defaults(func=cmd_gather)
 
