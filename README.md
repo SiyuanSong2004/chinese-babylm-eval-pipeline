@@ -264,11 +264,11 @@ bash collate_preds.sh <model_name> <backend> <track>
 
 ## Token Count
 
-The training data must contain **no more than 100M tokens**, where tokens are defined as **Jieba word segments** (version 0.42.1).
+The training data must contain **no more than 102M tokens**, where tokens are defined as **Jieba word segments** (version 0.42.1).
 
 ### Option 1 — Use the official pre-training dataset
 
-The organizers provide a ready-to-use 100M-word dataset on HuggingFace Hub:
+The organizers provide a ready-to-use 100M-word (actually 102M) dataset on HuggingFace Hub:
 
 https://huggingface.co/datasets/chinese-babylm-org/babylm-zho-100M
 
@@ -285,7 +285,7 @@ The token count for this dataset has already been verified by the organizers usi
 
 ### Option 2 — BYO (build your own) training data
 
-As long as its size is 100M words, as tokenized by jieba. If you choose a custom dataset, you must verify the token count yourself before submission. Count tokens with Jieba 0.42.1 as follows:
+As long as its size is 102M words, as tokenized by jieba. If you choose a custom dataset, you must verify the token count yourself before submission. Count tokens with Jieba 0.42.1 as follows:
 
 ```python
 import jieba  # version 0.42.1
@@ -295,7 +295,7 @@ for text in your_texts:          # iterate over all training samples
     total_tokens += len(list(jieba.cut(text)))
 
 print(f"Total Jieba tokens: {total_tokens:,}")
-assert total_tokens <= 100_000_000, "Dataset exceeds 100M token limit"
+assert total_tokens <= 102_000_000, "Dataset exceeds 102M token limit"
 ```
 
 **Rules:**
@@ -572,11 +572,11 @@ bash collate_preds.sh <model_name> <backend> <track>
 
 ## Token 计数
 
-训练数据的 **总 Token 数不得超过 1 亿（100M）**，Token 以 **Jieba 分词**（版本 0.42.1）为计量标准。
+训练数据的 **总 Token 数不得超过 1 亿（102M）**，Token 以 **Jieba 分词**（版本 0.42.1）为计量标准。
 
 ### 方案 1 — 使用官方预训练数据集
 
-主办方在 HuggingFace Hub 提供了经过验证的 100M 词数据集：
+主办方在 HuggingFace Hub 提供了经过验证的 100M 词数据集(实际为102M)：
 
 https://huggingface.co/datasets/chinese-babylm-org/babylm-zho-100M
 
@@ -593,7 +593,7 @@ ds = load_dataset("chinese-babylm-org/babylm-zho-100M")
 
 ### 方案 2 — 使用自选数据集（BYO）
 
-只要词数不超过 100M（以 Jieba 分词为准）即可。若选择自定义数据集，须在提交前自行核验词数总量。请按以下方式使用 Jieba 0.42.1 统计：
+只要词数不超过 102M（以 Jieba 分词为准）即可。若选择自定义数据集，须在提交前自行核验词数总量。请按以下方式使用 Jieba 0.42.1 统计：
 
 ```python
 import jieba  # 版本 0.42.1
@@ -603,7 +603,7 @@ for text in your_texts:          # 遍历所有训练样本的文本
     total_tokens += len(list(jieba.cut(text)))
 
 print(f"Jieba 总词数：{total_tokens:,}")
-assert total_tokens <= 100_000_000, "数据集超出 100M Token 上限"
+assert total_tokens <= 102_000_000, "数据集超出 102M Token 上限"
 ```
 
 **规则说明：**
