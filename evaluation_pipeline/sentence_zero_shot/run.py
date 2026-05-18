@@ -44,15 +44,37 @@ def _parse_arguments():
 
 
 def get_model(args: argparse.ArgumentParser):
+    kwargs = {
+        "trust_remote_code": True,
+        "revision": args.revision_name
+    }
+    
+    # Try using device_map to avoid meta-tensor issues safely 
+    try:
+        kwargs["device_map"] = DEVICE
+    except ImportError:
+        pass
+
     if args.backend in ["mlm", "mntp"]:
-        model = AutoModelForMaskedLM.from_pretrained(args.model_path_or_name, trust_remote_code=True, revision=args.revision_name)
+        model = AutoModelForMaskedLM.from_pretrained(args.model_path_or_name, **kwargs)
     elif args.backend == "causal":
-        model = AutoModelForCausalLM.from_pretrained(args.model_path_or_name, trust_remote_code=True, revision=args.revision_name)
+        model = AutoModelForCausalLM.from_pretrained(args.model_path_or_name, **kwargs)
     elif args.backend in ["enc_dec_mask", "enc_dec_prefix"]:
-        model = AutoModelForSeq2SeqLM.from_pretrained(args.model_path_or_name, trust_remote_code=True, revision=args.revision_name)
+        model = AutoModelForSeq2SeqLM.from_pretrained(args.model_path_or_name, **kwargs)
     else:
-        raise f"The backend {args.backend} is not implemented, please implemented yourself or raise an issue on the GitHub!"
-    model = model.to(DEVICE)
+        raise ValueError(f"The backend {args.backend} is not implemented, please implemented yourself or raise an issue on the GitHub!")
+    
+    # Fix for custom models missing 'all_tied_weights_keys'
+    if not hasattr(model, "all_tied_weights_keys"):
+        model.all_tied_weights_keys = getattr(model, "_tied_weights_keys", [])
+
+    try:
+        model = model.to(DEVICE)
+    except NotImplementedError as e:
+        # If accelerate successfully mapped the model, we safely ignore the meta tensor error
+        if "meta tensor" not in str(e).lower():
+            raise e
+
     model.eval()
 
     return model
